@@ -6,6 +6,7 @@ import AdminLogin from './components/AdminLogin';
 import MachineForm from './components/MachineForm';
 import PriceListImport from './components/PriceListImport';
 import SettingsPanel from './components/SettingsPanel';
+import QuotationsPanel from './components/QuotationsPanel';
 import { Machine, Option } from './types';
 
 function AdminPanel() {
@@ -21,7 +22,7 @@ function AdminPanel() {
   }>({ type: null, message: '' });
 
   // Estados para opcionales
-  const [activeTab, setActiveTab] = useState<'machines' | 'options' | 'import' | 'settings'>('machines');
+  const [activeTab, setActiveTab] = useState<'machines' | 'options' | 'import' | 'settings' | 'quotations'>('machines');
   const [showOptionForm, setShowOptionForm] = useState(false);
   const [editingOption, setEditingOption] = useState<Option | null>(null);
   const [optionForm, setOptionForm] = useState({
@@ -319,6 +320,16 @@ function AdminPanel() {
                 Opcionales ({options.length})
               </button>
               <button
+                onClick={() => setActiveTab('quotations')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'quotations'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Cotizaciones
+              </button>
+              <button
                 onClick={() => setActiveTab('import')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'import'
@@ -451,6 +462,8 @@ function AdminPanel() {
         )}
 
         {/* Configuración: tipo de cambio + condiciones de pago */}
+        {activeTab === 'quotations' && !isLoading && <QuotationsPanel />}
+
         {activeTab === 'settings' && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="mb-4">

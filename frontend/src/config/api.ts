@@ -10,6 +10,9 @@ export const API_CONFIG = {
   ENDPOINTS: {
     MACHINES: '/machines',
     ADMIN_MACHINES: '/admin/machines',
+    ADMIN_QUOTATIONS_LIST: '/quotations',
+    ADMIN_QUOTATION_DELETE: '/quotations/{id}',
+    ADMIN_QUOTATION_RESTORE: '/quotations/{id}/restore',
     QUOTATIONS: '/quotations',
     QUOTATION_STATS: '/quotations/stats',
     CREATE_QUOTATION: '/quotations',

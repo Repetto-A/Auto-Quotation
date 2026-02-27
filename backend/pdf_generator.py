@@ -9,9 +9,9 @@ from reportlab.lib.colors import Color
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from datetime import datetime
-from zoneinfo import ZoneInfo
 import tempfile
 import os
+from timezone_utils import get_arg_tz
 
 AGROMAQ_GREEN = Color(0.176, 0.314, 0.086)   # #2D5016
 AGROMAQ_YELLOW = Color(0.957, 0.816, 0.247)  # #F4D03F
@@ -23,7 +23,7 @@ MESES = [
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOGO_PATH = os.path.join(BASE_DIR, './assets/pdflogo.png')
-ARG_TZ = ZoneInfo("America/Argentina/Buenos_Aires")
+ARG_TZ = get_arg_tz()
 
 
 def _build_styles():

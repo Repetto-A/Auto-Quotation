@@ -8,7 +8,7 @@ import subprocess
 import shutil
 from pathlib import Path
 from typing import Dict, Optional, Tuple
-from zoneinfo import ZoneInfo
+from timezone_utils import get_arg_tz
 from pydantic import BaseModel
 from zeep import Client, Settings
 from lxml import etree
@@ -39,7 +39,7 @@ WSCI_URLS = {
 # Cache y TTL
 CACHE_FILE = Path(os.getenv('AFIP_CACHE_FILE', '.cache/afip_tokens.json'))
 TOKEN_TTL = int(os.getenv('AFIP_TOKEN_TTL', 12 * 3600))  # segundos
-ARG_TZ = ZoneInfo("America/Argentina/Buenos_Aires")
+ARG_TZ = get_arg_tz()
 
 class AFIPPersonaData(BaseModel):
     cuit: str

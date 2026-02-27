@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl, API_CONFIG, setAuthToken } from '../config/api';
 import { Lock, Eye, EyeOff, AlertCircle, Home } from 'lucide-react';
@@ -35,10 +35,10 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
         onLoginSuccess();
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || 'Error de autenticación');
+        setError(errorData.detail || 'Error de autenticaciÃ³n');
       }
     } catch (err) {
-      setError('Error de conexión. Verifica que el servidor esté funcionando.');
+      setError('Error de conexiÃ³n. Verifica que el servidor estÃ© funcionando.');
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +59,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             <Lock className="h-6 w-6 text-green-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Panel de Administración
+            Panel de AdministraciÃ³n
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Ingresa tus credenciales para acceder
@@ -86,22 +86,22 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             </div>
             <div className="relative">
               <label htmlFor="password" className="sr-only">
-                Contraseña
+                ContraseÃ±a
               </label>
               <input
                 id="password"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                placeholder="Contraseña"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 pr-12 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+                placeholder="ContraseÃ±a"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-30 flex items-center text-gray-500 hover:text-gray-700 bg-transparent border-0 p-0"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
@@ -119,7 +119,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                 <AlertCircle className="h-5 w-5 text-red-400" />
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-red-800">
-                    Error de autenticación
+                    Error de autenticaciÃ³n
                   </h3>
                   <div className="mt-2 text-sm text-red-700">
                     {error}
@@ -138,17 +138,17 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
               {isLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Iniciando sesión...
+                  Iniciando sesiÃ³n...
                 </div>
               ) : (
-                'Iniciar Sesión'
+                'Iniciar SesiÃ³n'
               )}
             </button>
           </div>
 
           <div className="text-center">
             <p className="text-xs text-gray-500">
-              Sesión válida por 15 minutos de inactividad
+              SesiÃ³n vÃ¡lida por 15 minutos de inactividad
             </p>
           </div>
         </form>

@@ -1,7 +1,7 @@
 ﻿import sys
 import os
 sys.path.append(os.path.dirname(__file__))
-from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile, Form, Header
+from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile, Form, Header, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -16,6 +16,7 @@ from pdf_generator import PDFGenerator
 import json
 from db import engine, SessionLocal, Base, Machine, Quotation, Option, MachineSpec, PaymentCondition, ExchangeRate
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_, inspect, text, func
 from afip_ws import afip_ws, AFIPPersonaData
 from dotenv import load_dotenv
 load_dotenv()
@@ -151,6 +152,31 @@ def get_db():
     finally:
         db.close()
 
+
+def ensure_quotation_soft_delete_columns(db: Session):
+    """Ensure soft-delete columns exist for legacy databases."""
+    inspector = inspect(db.bind)
+    columns = {col["name"] for col in inspector.get_columns("quotations")}
+
+    statements = []
+    dialect = db.bind.dialect.name if db.bind is not None else ""
+    default_false = "0" if dialect == "sqlite" else "false"
+
+    if "is_deleted" not in columns:
+        statements.append(
+            f"ALTER TABLE quotations ADD COLUMN is_deleted BOOLEAN NOT NULL DEFAULT {default_false}"
+        )
+    if "deleted_at" not in columns:
+        statements.append("ALTER TABLE quotations ADD COLUMN deleted_at TIMESTAMP NULL")
+    if "deleted_by" not in columns:
+        statements.append("ALTER TABLE quotations ADD COLUMN deleted_by VARCHAR NULL")
+
+    for stmt in statements:
+        db.execute(text(stmt))
+
+    if statements:
+        db.commit()
+
 # JWT Token functions
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -271,6 +297,17 @@ MACHINERY_CATALOG = [
 
 @app.on_event("startup")
 async def startup_event():
+    # Keep legacy DBs compatible when new columns are introduced.
+    db = None
+    try:
+        db = SessionLocal()
+        ensure_quotation_soft_delete_columns(db)
+    except Exception as e:
+        print(f"Warning ensuring quotation soft-delete columns: {e}")
+    finally:
+        if db:
+            db.close()
+
     # Initialize machinery catalog in database
     db = SessionLocal()
     if db.query(Machine).count() == 0:
@@ -618,8 +655,97 @@ async def create_quotation_multiple(quotation: QuotationCreateMultiple, db: Sess
     )
 
 @app.get("/quotations")
-def get_quotations(admin: dict = Depends(get_current_admin), db: Session = Depends(get_db)):
-    return db.query(Quotation).order_by(Quotation.created_at.desc()).all()
+def get_quotations(
+    include_deleted: bool = Query(default=False),
+    q: Optional[str] = Query(default=None),
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
+    sort: str = Query(default="created_at_desc"),
+    admin: dict = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    query = db.query(Quotation)
+
+    if not include_deleted:
+        query = query.filter(Quotation.is_deleted == False)
+
+    if q:
+        q_value = q.strip()
+        term = f"%{q_value}%"
+        normalized_digits = "".join(ch for ch in q_value if ch.isdigit())
+        normalized_cuit_db = func.replace(func.replace(Quotation.client_cuit, "-", ""), " ", "")
+        filters = [
+            Quotation.client_name.ilike(term),
+            Quotation.client_cuit.ilike(term),
+            Quotation.machine_code.ilike(term),
+            Quotation.client_company.ilike(term),
+        ]
+        if normalized_digits:
+            filters.append(normalized_cuit_db.ilike(f"%{normalized_digits}%"))
+        query = query.filter(or_(*filters))
+
+    total = query.count()
+
+    if sort != "created_at_desc":
+        sort = "created_at_desc"
+
+    items = (
+        query.order_by(Quotation.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+    return {
+        "items": items,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@app.delete("/quotations/{quotation_id}")
+def soft_delete_quotation(
+    quotation_id: int,
+    admin: dict = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    quotation = db.query(Quotation).filter(Quotation.id == quotation_id).first()
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+
+    if quotation.is_deleted:
+        return {"message": "Quotation already deleted", "id": quotation.id}
+
+    quotation.is_deleted = True
+    quotation.deleted_at = datetime.now()
+    quotation.deleted_by = admin.get("sub")
+    db.commit()
+    db.refresh(quotation)
+
+    return {"message": "Quotation deleted", "id": quotation.id}
+
+
+@app.post("/quotations/{quotation_id}/restore")
+def restore_quotation(
+    quotation_id: int,
+    admin: dict = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    quotation = db.query(Quotation).filter(Quotation.id == quotation_id).first()
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+
+    if not quotation.is_deleted:
+        return {"message": "Quotation already active", "id": quotation.id}
+
+    quotation.is_deleted = False
+    quotation.deleted_at = None
+    quotation.deleted_by = None
+    db.commit()
+    db.refresh(quotation)
+
+    return {"message": "Quotation restored", "id": quotation.id}
 
 @app.get("/quotations/stats")
 def get_quotation_stats(admin: dict = Depends(get_current_admin), db: Session = Depends(get_db)):

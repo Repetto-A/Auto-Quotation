@@ -3,14 +3,14 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
-from zoneinfo import ZoneInfo
+from timezone_utils import get_arg_tz
 
 # Database setup
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./agromaq_enhanced.db")
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-ARG_TZ = ZoneInfo("America/Argentina/Buenos_Aires")
+ARG_TZ = get_arg_tz()
 
 # Tabla intermedia para relación muchos-a-muchos entre máquinas y opcionales
 machine_option = Table(
@@ -94,6 +94,9 @@ class Quotation(Base):
     final_price = Column(Float)
     options_data = Column(Text, nullable=True)  # JSON string con snapshot de opcionales
     options_total = Column(Float, default=0.0)  # Suma total de opcionales
+    is_deleted = Column(Boolean, default=False, nullable=False)
+    deleted_at = Column(DateTime, nullable=True)
+    deleted_by = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(ARG_TZ))
 
 Base.metadata.create_all(bind=engine) 
