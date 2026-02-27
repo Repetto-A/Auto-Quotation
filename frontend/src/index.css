@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --agro-bg: #f3f7f3;
+  --agro-surface: #ffffff;
+  --agro-text: #1f2937;
+  --agro-muted: #6b7280;
+  --agro-line: #d9e5dc;
+  --agro-primary: #15803d;
+  --agro-primary-soft: #e8f5e9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--agro-text);
+  font-family: "Barlow", "Trebuchet MS", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 12% 15%, rgba(21, 128, 61, 0.08), transparent 36%),
+    radial-gradient(circle at 88% 85%, rgba(22, 163, 74, 0.08), transparent 32%),
+    linear-gradient(180deg, #f8fbf8 0%, var(--agro-bg) 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+}
+
+@keyframes agroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agroPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-enter {
+  animation: agroFadeUp 420ms ease-out both;
+}
+
+.animate-enter-delay-1 {
+  animation-delay: 90ms;
+}
+
+.animate-enter-delay-2 {
+  animation-delay: 170ms;
+}
+
+.animate-pop {
+  animation: agroPopIn 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-enter,
+  .animate-enter-delay-1,
+  .animate-enter-delay-2,
+  .animate-pop {
+    animation: none !important;
+  }
+}

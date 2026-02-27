@@ -1,0 +1,77 @@
+[
+  {
+    "categoria": "Acoplados Playos",
+    "productos": [
+      "ACOPLADO PLAYO CON BARANDAS (DE USO RURAL) – 3 A 4 TT. - Largo 3,10 Mts. – Ancho 2 Mts",
+      "ACOPLADO PLAYO CON BARANDAS (DE USO RURAL) – 4 TT. - Largo 4,10 Mts. – Ancho 2 Mts"
+    ]
+  },
+  {
+    "categoria": "Gruas",
+    "productos": [
+      "GRUA GIRATORIA HIDRAULICA MULTIPROPOSITO – DE USO RURAL – G.H.G. 6"
+    ]
+  },
+  {
+    "categoria": "Hojas Niveladoras",
+    "productos": [
+      "HOJA NIVELADORA – LEVANTE DE 3 Ptos. – 2230"
+    ]
+  },
+  {
+    "categoria": "Palas",
+    "productos": [
+      "PALA DE ARRASTRE HIDRAULICA C/DESCARGA TRASERA – A 1500 – a) Standard (no incluye cilindro y mangueras hidráulicas",
+      "PALA DE ARRASTRE HIDRAULICA C/DESCARGA TRASERA – A 1500 – b) Con cilindro, mangueras hidráulicas y reja lateral",
+      "PALA DE ARRASTRE HIDRAULICA C/DESCARGA TRASERA – A 2000"
+    ]
+  },
+  {
+    "categoria": "Tolvas",
+    "productos": [
+      "ACOPLADO RURAL TOLVA PARA FERTILIZANTES Y SEMILLAS – A.T.F. 8",
+      "ACOPLADO RURAL TOLVA PARA SEMILLAS Y FERTILIZANTES – A.T.F. 10",
+      "ACOPLADO RURAL TOLVA PARA SEMILLAS Y FERTILIZANTES – A.T.F. 12",
+      "ACOPLADO RURAL TOLVA PARA SEMILLAS Y FERTILIZANTES – A.T.F. 14",
+      "ACOPLADO RURAL TOLVA PARA SEMILLAS Y FERTILIZANTES – A.T.F. 24"
+    ]
+  },
+  {
+    "categoria": "Trailers",
+    "productos": [
+      "ACOPLADO - TRAILER BALANCIN - (DE USO RURAL) – 4 TT. – Largo 4 Mts. – Ancho 1,80 Mts. – (Ruedas al costado)",
+      "ACOPLADO - TRAILER BALANCIN - (DE USO RURAL) – 4 TT. – Largo 4 Mts. – Ancho 2 Mts. – (Ruedas debajo del chasis)",
+      "TRAILER BALANCIN CON RAMPAS (DE USO RURAL) – Capacidad 6 TT. – Largo 4,50 Mts. – Ancho 1,90 Mts."
+    ]
+  },
+  {
+    "categoria": "Transportadores de Rollos",
+    "productos": [
+      "CARGADOR Y TRANSPORTADOR DE ROLLOS HIDRAULICO – T. R. A. 6000 - (CON JOYSTICK INCLUIDO)",
+      "ELEVADOR DE ROLLO – E. R. A. 2000",
+      "TRANSPORTADOR DE 1 ROLLO HIDRAULICO – T. R. A. 1000 – a) Sin cilindro y mangueras hidráulicas",
+      "TRANSPORTADOR DE 1 ROLLO HIDRAULICO – T. R. A. 1000 – b) Con cilindro y mangueras hidráulicas"
+    ]
+  },
+  {
+    "categoria": "Vaqueros",
+    "productos": [
+      "ACOPLADO RURAL VAQUERO – DESMONTABLE PARA 6 ANIMALES",
+      "ACOPLADO RURAL VAQUERO – FIJO PARA 6 ANIMALES"
+    ]
+  },
+  {
+    "categoria": "Volcadores",
+    "productos": [
+      "ACOPLADO VOLCADOR MANUAL O HIDRAULICO (DE USO RURAL) – A. V. A. 3000 – VUELCO HIDRAULICO",
+      "ACOPLADO VOLCADOR MANUAL O HIDRAULICO (DE USO RURAL) – A. V. A. 3000 – VUELCO MANUAL"
+    ]
+  },
+  {
+    "categoria": "Volcadores Trivuelco",
+    "productos": [
+      "ACOPLADOS VOLCADORES TRIVUELCOS (DE USO RURAL) – A. V. A. 3500",
+      "ACOPLADOS VOLCADORES TRIVUELCOS (DE USO RURAL) – A. V. A. 4000"
+    ]
+  }
+]

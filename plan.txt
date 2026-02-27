@@ -1,0 +1,52 @@
+Plan propuesto (detallado) para dejarlo bien funcionando
+
+Definir contrato único frontend-backend
+Objetivo: dejar de usar /generate-quote legacy y usar solo /quotations (ya devuelve PDF).
+Base técnica: main.py y main.py.
+Resultado esperado: un payload consistente con todos los campos estructurados.
+Migrar App.tsx al endpoint moderno
+Cambiar submit en App.tsx para usar API_CONFIG.ENDPOINTS.CREATE_QUOTATION (/quotations).
+Armar items desde lineItems:
+machine_code
+quantity
+unit_price (del item actual)
+discount_percent (definir política, ver punto 4)
+options: [] por ahora si tu UI no gestiona opcionales.
+Enviar datos cliente en snake_case:
+client_cuit, client_name, client_phone, client_email, client_company, client_address, notes.
+Corregir campos que hoy “se pierden”
+clientAddress dejar de concatenarlo en notes; enviarlo como client_address real.
+Mantener notes solo para observaciones reales.
+Validación de aceptación: revisar en DB que client_address quede persistido y el PDF lo muestre.
+Política de descuentos (simple, acorde a software interno)
+Como decís, no hace falta endurecer validaciones de negocio.
+Propuesta pragmática:
+Front elige el descuento global manual.
+Front manda client_discount_percent = form.discountPercent.
+Front manda additional_discount_percent = 0.
+En cada item, mandar discount_percent = 0 para evitar doble descuento.
+Así evitás ambigüedad y el backend mantiene cálculo consistente.
+Revisar coherencia de precios en backend
+Hoy en /quotations se mezcla machine.price y item.unit_price en distintos tramos.
+Ajuste recomendado: definir una sola fuente para subtotal de máquina.
+Si querés respetar “precio del momento en UI”, usar item.unit_price para todos los cálculos de ese item.
+Mantener AFIP lookup como primer flujo
+El bloque CUIT + búsqueda ya quedó prioritario en App.tsx.
+Al migrar endpoint, no tocar esa UX; solo asegurar que los campos autocompletados vayan al payload nuevo.
+Pruebas funcionales mínimas (checklist)
+Caso A: CUIT válido, autocompleta nombre/domicilio, genera PDF.
+Caso B: CUIT vacío, carga manual, genera PDF.
+Caso C: 2+ máquinas, cantidades distintas, total correcto.
+Caso D: descuento 0%, 10%, 25% y comparación con total del PDF.
+Caso E: backend caída de AFIP no bloquea cotización manual.
+Limpieza y compatibilidad
+Dejar /generate-quote operativo temporalmente (1 release) pero no usado por front.
+Agregar log de deprecación al endpoint legacy.
+En siguiente release, retirar legacy si ya no hay consumidores.
+Entregables finales
+App.tsx migrado al payload /quotations.
+Ajuste menor en main.py para coherencia de cálculo (si aplicamos punto 5).
+Nota breve en README con formato de payload oficial.
+Si querés, en el próximo paso te lo implemento directo con cambios mínimos y sin alterar tu UX actual.
+
+
