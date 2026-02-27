@@ -8,6 +8,7 @@ import subprocess
 import shutil
 from pathlib import Path
 from typing import Dict, Optional, Tuple
+from zoneinfo import ZoneInfo
 from pydantic import BaseModel
 from zeep import Client, Settings
 from lxml import etree
@@ -38,6 +39,7 @@ WSCI_URLS = {
 # Cache y TTL
 CACHE_FILE = Path(os.getenv('AFIP_CACHE_FILE', '.cache/afip_tokens.json'))
 TOKEN_TTL = int(os.getenv('AFIP_TOKEN_TTL', 12 * 3600))  # segundos
+ARG_TZ = ZoneInfo("America/Argentina/Buenos_Aires")
 
 class AFIPPersonaData(BaseModel):
     cuit: str
@@ -161,10 +163,12 @@ class AFIPWebService:
 
 
     def _generate_ltr(self, service: str) -> str:
-        now = datetime.datetime.now()
+        # AFIP WSAA valida ventana temporal; enviar timestamps en hora AR
+        # y sin microsegundos evita errores de formato/offset.
+        now = datetime.datetime.now(ARG_TZ).replace(microsecond=0)
         unique_id = now.strftime("%y%m%d%H%M")
-        gen = (now - datetime.timedelta(minutes=10)).isoformat()
-        exp = (now + datetime.timedelta(minutes=10)).isoformat()
+        gen = (now - datetime.timedelta(minutes=10)).isoformat(timespec="seconds")
+        exp = (now + datetime.timedelta(minutes=10)).isoformat(timespec="seconds")
         return f"""<loginTicketRequest version="1.0">
   <header>
     <uniqueId>{unique_id}</uniqueId>
