@@ -232,7 +232,8 @@ function App() {
         clientEmail: form.clientEmail,
         clientCompany: form.clientCompany,
         notes: notesText,
-        applyDiscount: form.discountPercent > 0,
+        clientDiscountPercent: form.discountPercent,
+        additionalDiscountPercent: 0,
       };
 
       const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.GENERATE_QUOTE), {
